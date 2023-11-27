@@ -1,0 +1,71 @@
+querys:
+
+1)
+select cliente_id,nombre,apellidos,ciudad from clientes
+where ciudad like '%Monterrey%'
+order by cliente_id desc
+
+2)
+select producto_id,
+nombre,
+descripcion as descripcion_del_producto,precio 
+from productos
+where precio < 15
+order by precio 
+
+3)
+select 
+	cl.cliente_id,
+	cl.nombre,
+	cantidad,
+	pro.descripcion as descripcion_producto_vendido
+from ventas as ve
+join clientes as cl on ve.cliente_id = cl.cliente_id 
+join productos as pro on ve.producto_id=pro.producto_id
+where cantidad > 10
+order by cantidad
+
+4)
+select cliente_id,nombre,ciudad
+ from clientes
+ where cliente_id 
+ not in 
+ (select cliente_id from ventas) 
+
+5)
+ select c.cliente_id, c.nombre, count(producto_id) from clientes c
+ inner join ventas v
+ on c.cliente_id = v.cliente_id
+ group by c.cliente_id
+ having count(producto_id) > (select count(*) from productos)
+
+6)
+SELECT cl.cliente_id,cl.nombre, SUM (cantidad) AS total
+FROM ventas as ve
+join clientes as cl
+on ve.cliente_id = cl.cliente_id
+group by cl.cliente_id
+
+7)
+select producto_id, nombre from productos where producto_id NOT IN (
+select v.producto_id
+from ventas v
+where v.cliente_id in (select cliente_id from clientes where ciudad like '%Guadalajara%'))
+
+
+8)
+select producto_id,nombre
+from productos
+where producto_id IN (
+select producto_id
+from ventas v
+where v.cliente_id IN (select cliente_id from clientes where ciudad like '%Monterrey%'))
+AND producto_id IN (
+select producto_id
+from ventas v
+where v.cliente_id IN (select cliente_id from clientes where ciudad like '%Cancún%'))
+ 
+
+9)
+select distinct(ciudad) from clientes where cliente_id IN (
+select distinct(cliente_id) from ventas)
